@@ -1,21 +1,21 @@
 import requests
 
-url = "https://ummahapi.com/api/prayer-times?lat=24.8607&lng=67.0011&madhab=Hanafi&method=MuslimWorldLeague"
+url = "https://ummahapi.com/api/prayer-times?lat=29.7604&lng=-95.3698&madhab=Hanafi&method=MuslimWorldLeague&timezone=America/Chicago"
 
 try:
     response = requests.get(url)
-    response.raise_for_status()  # Check for HTTP errors
+    response.raise_for_status()
     data = response.json()
 
-    # Safely access the data
-    if "data" in data and "timings" in data["data"]:
-        timings = data["data"]["timings"]
+    # Correct structure
+    if "data" in data and "prayer_times" in data["data"]:
+        timings = data["data"]["prayer_times"]
 
-        print("Fajr:", timings.get("Fajr"))
-        print("Dhuhr:", timings.get("Dhuhr"))
-        print("Asr:", timings.get("Asr"))
-        print("Maghrib:", timings.get("Maghrib"))
-        print("Isha:", timings.get("Isha"))
+        print("Fajr:", timings.get("fajr"))
+        print("Dhuhr:", timings.get("dhuhr"))
+        print("Asr:", timings.get("asr"))
+        print("Maghrib:", timings.get("maghrib"))
+        print("Isha:", timings.get("isha"))
     else:
         print("Error: Unexpected API response structure.")
         print("Response:", data)
