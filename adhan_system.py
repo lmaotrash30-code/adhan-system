@@ -23,13 +23,10 @@ response = requests.get(url)
 data = response.json()
 
 timings = data["data"]["prayer_times"]
-  # set to 1–2 minutes from now
 
 # Create scheduler
 scheduler = BlockingScheduler()
 
-# Set your UTC offset (Houston is -5)
-UTC_OFFSET = -5
 
 # Schedule each prayer
 for prayer, time_str in timings.items():
@@ -41,6 +38,10 @@ for prayer, time_str in timings.items():
     # ADJUST THE HOUR HERE
     local_hour = (hour + UTC_OFFSET) % 24
 
+    # Adjust Asr prayer time to be one hour earlier
+    if prayer.lower() == "asr":
+        local_hour = (local_hour - 1) % 24
+
     scheduler.add_job(
         play_adhan,
         'cron',
@@ -49,7 +50,7 @@ for prayer, time_str in timings.items():
         args=[prayer]
     )
 
-    print(f"Scheduled {prayer} at {local_hour:02d}:{minute:02d}"
+    print(f"Scheduled {prayer} at {local_hour:02d}:{minute:02d}")
 print("System running...")
 print(data["data"]["location"])
 scheduler.start()
