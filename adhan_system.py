@@ -2,6 +2,9 @@ import requests
 from apscheduler.schedulers.blocking import BlockingScheduler
 import pygame
 import time
+import os
+os.environ["SDL_AUDIODRIVER"] = "alsa"
+
 
 # --- CONFIGURATION ---
 # If the API times are already correct for your local time, keep this at 0.
@@ -26,19 +29,29 @@ def play_adhan(prayer_name):
 # Location: Houston, TX | Method: ISNA | Madhab: Hanafi
 url = "https://ummahapi.com/api/prayer-times?lat=29.7604&lng=-95.3698&madhab=Hanafi&method=ISNA&timezone=America/Chicago"
 
-try:
-    response = requests.get(url)
-    response.raise_for_status() # Check for connection issues
-    data = response.json()
-    timings = data["data"]["prayer_times"]
-except Exception as e:
-    print(f"Failed to fetch prayer times: {e}")
-    exit()
+def fetch_prayer_times():
+    global timings, data
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        timings = data["data"]["prayer_times"]
+        print("Prayer times updated.")
+    except Exception as e:
+        print(f"Failed to fetch prayer times: {e}")
+
+fetch_prayer_times()
+
+
+
 
 # Create scheduler
 scheduler = BlockingScheduler()
 
 print("--- Scheduled Prayer Times ---")
+
+scheduler.add_job(fetch_prayer_times, 'cron', hour=0, minute=5)
+
 
 # Schedule each prayer
 for prayer, time_str in timings.items():
