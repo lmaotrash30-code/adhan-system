@@ -1,0 +1,8 @@
+mkdir -p ~/.config/autostart
+
+nano ~/.config/autostart/adhan.desktop
+
+[Desktop Entry]
+Type=Application
+Name=Adhan System
+Exec=lxterminal -e "bash -c 'cd ~/adhan-system && source venv/bin/activate && python3 adhan_system.py; exec bash'"
