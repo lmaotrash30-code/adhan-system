@@ -1,0 +1,28 @@
+# Copy to the adhan folder
+cp wifi_watchdog.sh /home/ozen/adhan-system/wifi_watchdog.sh
+
+# Make it executable
+chmod +x /home/ozen/adhan-system/wifi_watchdog.sh
+
+sudo nano /etc/systemd/system/wifi-watchdog.service
+
+[Unit]
+Description=WiFi Watchdog
+After=network.target
+
+[Service]
+ExecStart=/home/ozen/adhan-system/wifi_watchdog.sh
+Restart=always
+RestartSec=10
+User=root
+
+[Install]
+WantedBy=multi-user.target
+
+sudo systemctl daemon-reload
+sudo systemctl enable wifi-watchdog
+sudo systemctl start wifi-watchdog
+
+sudo journalctl -u wifi-watchdog -f
+# or
+tail -f /home/ozen/adhan-system/wifi_watchdog.log
